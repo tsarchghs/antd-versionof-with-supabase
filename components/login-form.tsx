@@ -1,20 +1,10 @@
 "use client";
 
-import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Alert, Button, Card, Input, Typography } from "antd";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 export function LoginForm({
   className,
@@ -47,63 +37,70 @@ export function LoginForm({
     }
   };
 
+  const containerClassName = useMemo(
+    () => ["form-stack", className].filter(Boolean).join(" "),
+    [className],
+  );
+
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
+    <div className={containerClassName} {...props}>
       <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl">Login</CardTitle>
-          <CardDescription>
-            Enter your email below to login to your account
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleLogin}>
-            <div className="flex flex-col gap-6">
-              <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="m@example.com"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-              <div className="grid gap-2">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
-                  <Link
-                    href="/auth/forgot-password"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
-                    Forgot your password?
-                  </Link>
-                </div>
-                <Input
-                  id="password"
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
-              {error && <p className="text-sm text-red-500">{error}</p>}
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Logging in..." : "Login"}
-              </Button>
+        <div className="form-stack">
+          <div>
+            <Typography.Title level={3} style={{ margin: 0 }}>
+              Login
+            </Typography.Title>
+            <Typography.Text type="secondary">
+              Enter your email below to login to your account
+            </Typography.Text>
+          </div>
+          <form onSubmit={handleLogin} className="form-stack">
+            <div className="form-field">
+              <label className="form-label" htmlFor="email">
+                Email
+              </label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="m@example.com"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
             </div>
-            <div className="mt-4 text-center text-sm">
-              Don&apos;t have an account?{" "}
-              <Link
-                href="/auth/sign-up"
-                className="underline underline-offset-4"
-              >
-                Sign up
-              </Link>
+            <div className="form-field">
+              <div className="form-field-row">
+                <label className="form-label" htmlFor="password">
+                  Password
+                </label>
+                <Link href="/auth/forgot-password" className="link-strong">
+                  Forgot your password?
+                </Link>
+              </div>
+              <Input.Password
+                id="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
             </div>
+            {error ? <Alert type="error" showIcon message={error} /> : null}
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={isLoading}
+              block
+            >
+              Login
+            </Button>
           </form>
-        </CardContent>
+          <div className="form-footer">
+            Don&apos;t have an account?{" "}
+            <Link href="/auth/sign-up" className="link-strong">
+              Sign up
+            </Link>
+          </div>
+        </div>
       </Card>
     </div>
   );

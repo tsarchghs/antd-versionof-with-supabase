@@ -1,20 +1,19 @@
-import { Badge } from "./ui/badge";
-import { Button } from "./ui/button";
+"use client";
+
+import { Button, Space, Tag } from "antd";
 
 export function EnvVarWarning() {
   return (
-    <div className="flex gap-4 items-center">
-      <Badge variant={"outline"} className="font-normal">
-        Supabase environment variables required
-      </Badge>
-      <div className="flex gap-2">
-        <Button size="sm" variant={"outline"} disabled>
+    <Space size="middle" align="center">
+      <Tag color="warning">Supabase environment variables required</Tag>
+      <Space size="small">
+        <Button size="small" disabled>
           Sign in
         </Button>
-        <Button size="sm" variant={"default"} disabled>
+        <Button size="small" type="primary" disabled>
           Sign up
         </Button>
-      </div>
-    </div>
+      </Space>
+    </Space>
   );
 }

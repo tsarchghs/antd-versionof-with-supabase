@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "../ui/button";
+import { Button } from "antd";
 
 const CopyIcon = () => (
   <svg
@@ -37,25 +37,28 @@ const CheckIcon = () => (
 );
 
 export function CodeBlock({ code }: { code: string }) {
-  const [icon, setIcon] = useState(CopyIcon);
+  const [icon, setIcon] = useState<React.ReactNode>(<CopyIcon />);
 
   const copy = async () => {
     await navigator?.clipboard?.writeText(code);
-    setIcon(CheckIcon);
-    setTimeout(() => setIcon(CopyIcon), 2000);
+    setIcon(<CheckIcon />);
+    setTimeout(() => setIcon(<CopyIcon />), 2000);
   };
 
   return (
-    <pre className="bg-muted rounded-md p-6 my-6 relative">
+    <pre className="code-block">
       <Button
-        size="icon"
+        className="code-block-action"
+        size="small"
+        type="default"
+        shape="circle"
         onClick={copy}
-        variant={"outline"}
-        className="absolute right-2 top-2"
+        icon={icon}
+        aria-label="Copy code"
       >
-        {icon}
+        <span className="sr-only">Copy</span>
       </Button>
-      <code className="text-xs p-3">{code}</code>
+      <code>{code}</code>
     </pre>
   );
 }

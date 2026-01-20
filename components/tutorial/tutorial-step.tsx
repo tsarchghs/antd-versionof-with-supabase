@@ -1,4 +1,7 @@
-import { Checkbox } from "../ui/checkbox";
+"use client";
+
+import { Checkbox } from "antd";
+import { useState } from "react";
 
 export function TutorialStep({
   title,
@@ -7,24 +10,19 @@ export function TutorialStep({
   title: string;
   children: React.ReactNode;
 }) {
+  const [checked, setChecked] = useState(false);
+
   return (
-    <li className="relative">
+    <li className={`tutorial-step${checked ? " checked" : ""}`}>
       <Checkbox
-        id={title}
-        name={title}
-        className={`absolute top-[3px] mr-2 peer`}
+        checked={checked}
+        onChange={(event) => setChecked(event.target.checked)}
+        aria-label={title}
       />
-      <label
-        htmlFor={title}
-        className={`relative text-base text-foreground peer-checked:line-through font-medium`}
-      >
-        <span className="ml-8">{title}</span>
-        <div
-          className={`ml-8 text-sm peer-checked:line-through font-normal text-muted-foreground`}
-        >
-          {children}
-        </div>
-      </label>
+      <div>
+        <div className="tutorial-step-title">{title}</div>
+        <div className="tutorial-step-body">{children}</div>
+      </div>
     </li>
   );
 }
