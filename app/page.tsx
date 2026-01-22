@@ -1,52 +1,108 @@
-import { DeployButton } from "@/components/deploy-button";
-import { EnvVarWarning } from "@/components/env-var-warning";
-import { AuthButton } from "@/components/auth-button";
-import { Hero } from "@/components/hero";
-import { ThemeSwitcher } from "@/components/theme-switcher";
-import { ConnectSupabaseSteps } from "@/components/tutorial/connect-supabase-steps";
-import { SignUpUserSteps } from "@/components/tutorial/sign-up-user-steps";
-import { hasEnvVars } from "@/lib/utils";
 import Link from "next/link";
-import { Suspense } from "react";
+import { createClient } from "@/lib/supabase/server";
 
-export default function Home() {
+export default async function Home() {
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getClaims();
+  const user = data?.claims;
+
   return (
-    <main className="app-shell">
-      <nav className="app-header">
-        <div className="app-header-inner">
-          <div className="app-brand">
-            <Link href="/">Next.js Supabase Starter</Link>
-            <DeployButton />
-          </div>
-          {!hasEnvVars ? (
-            <EnvVarWarning />
+    <main className="landing-shell">
+      <nav className="landing-nav">
+        <Link href="/" className="landing-brand">
+          ForgeTrack
+        </Link>
+        <div className="landing-actions">
+          {user ? (
+            <Link href="/dashboard" className="app-primary-link">
+              Open dashboard
+            </Link>
           ) : (
-            <Suspense>
-              <AuthButton />
-            </Suspense>
+            <>
+              <Link href="/auth/login" className="app-link">
+                Sign in
+              </Link>
+              <Link href="/auth/sign-up" className="app-primary-link">
+                Create account
+              </Link>
+            </>
           )}
         </div>
       </nav>
-      <div className="app-content">
-        <Hero />
-        <section className="content-stack">
-          <h2 className="section-title">Next steps</h2>
-          {hasEnvVars ? <SignUpUserSteps /> : <ConnectSupabaseSteps />}
-        </section>
-      </div>
-      <footer className="app-footer">
-        <p>
-          Powered by{" "}
-          <a
-            href="https://supabase.com/?utm_source=create-next-app&utm_medium=template&utm_term=nextjs"
-            target="_blank"
-            className="link-strong"
-            rel="noreferrer"
-          >
-            Supabase
-          </a>
-        </p>
-        <ThemeSwitcher />
+
+      <section className="landing-hero">
+        <div>
+          <p className="text-muted">Construction progress intelligence</p>
+          <h1 className="landing-hero-title">
+            Progress clarity for every crew and site.
+          </h1>
+          <p className="landing-hero-subtitle">
+            ForgeTrack pulls project, task, and work log data into a single
+            command center. Approve labor faster, spot bottlenecks earlier, and
+            keep leadership aligned with live metrics.
+          </p>
+          <div className="landing-actions landing-hero-actions">
+            <Link href="/dashboard" className="app-primary-link">
+              View live dashboard
+            </Link>
+            <Link href="/auth/login" className="app-link">
+              Sign in
+            </Link>
+          </div>
+        </div>
+
+        <div className="landing-hero-card">
+          <div>
+            <p className="text-muted">Live snapshot</p>
+            <h3>Week 14 delivery pulse</h3>
+          </div>
+          <ul className="landing-stats">
+            <li>
+              <span className="landing-stat-value">128</span>
+              <span className="landing-stat-label">Hours approved</span>
+            </li>
+            <li>
+              <span className="landing-stat-value">24</span>
+              <span className="landing-stat-label">Tasks active</span>
+            </li>
+            <li>
+              <span className="landing-stat-value">6</span>
+              <span className="landing-stat-label">Logs pending</span>
+            </li>
+          </ul>
+          <Link href="/reports" className="app-link">
+            Explore reporting
+          </Link>
+        </div>
+      </section>
+
+      <section className="landing-grid">
+        <div className="landing-card">
+          <h3>Unified project control</h3>
+          <p className="text-muted">
+            Connect schedule, task scope, and crew assignment with a clear view
+            of status, dates, and workloads.
+          </p>
+        </div>
+        <div className="landing-card">
+          <h3>Frictionless approvals</h3>
+          <p className="text-muted">
+            Managers can approve or reject work logs instantly, with notes
+            preserved for audit trails.
+          </p>
+        </div>
+        <div className="landing-card">
+          <h3>Attachment-ready reporting</h3>
+          <p className="text-muted">
+            Upload photos and documents alongside tasks to document progress and
+            de-risk handoffs.
+          </p>
+        </div>
+      </section>
+
+      <footer className="landing-footer">
+        <span>ForgeTrack &copy; 2026</span>
+        <span>Built for fast-moving construction teams.</span>
       </footer>
     </main>
   );
