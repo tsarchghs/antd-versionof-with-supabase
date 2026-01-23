@@ -17,12 +17,20 @@ import {
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import type { Role } from "@/api/types";
 import { createClient } from "@/lib/supabase/client";
 import { useSession } from "./session-provider";
 
 const { Header, Sider, Content } = Layout;
 
-const NAV_ITEMS = [
+type NavItem = {
+  key: string;
+  label: string;
+  icon: React.ReactNode;
+  roles?: Role[];
+};
+
+const NAV_ITEMS: NavItem[] = [
   { key: "/dashboard", label: "Dashboard", icon: <Gauge size={18} /> },
   { key: "/projects", label: "Projects", icon: <FolderKanban size={18} /> },
   { key: "/tasks", label: "Tasks", icon: <ListChecks size={18} /> },
@@ -41,7 +49,7 @@ const NAV_ITEMS = [
     roles: ["admin", "manager"],
   },
   { key: "/settings", label: "Settings", icon: <Settings size={18} /> },
-] as const;
+];
 
 const MEMBER_NAV_KEYS = new Set(["/projects", "/tasks", "/field-log"]);
 const MEMBER_ALLOWED_PREFIXES = ["/projects", "/tasks", "/field-log", "/settings"];
