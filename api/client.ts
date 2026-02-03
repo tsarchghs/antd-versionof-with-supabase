@@ -25,7 +25,11 @@ function buildUrl(path: string, query?: ApiFetchOptions["query"]) {
     );
   }
 
-  const url = new URL(path, API_BASE_URL);
+  const baseUrl = new URL(API_BASE_URL);
+  const basePath = baseUrl.pathname.replace(/\/$/, "");
+  const nextPath = path.startsWith("/") ? path : `/${path}`;
+  baseUrl.pathname = `${basePath}${nextPath}`;
+  const url = baseUrl;
   if (query) {
     Object.entries(query).forEach(([key, value]) => {
       if (value === undefined || value === null || value === "") {
